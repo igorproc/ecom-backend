@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model apiTokens {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int?      @db.UnsignedInt
+  name       String    @db.VarChar(255)
+  type       String    @db.VarChar(255)
+  token      String    @unique(map: "api_tokens_token_unique")
+  expires_at DateTime  @db.Timestamp(0)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  users      user?     @relation(fields: [user_id], references: [uid], onDelete: Cascade, onUpdate: NoAction, map: "api_tokens_user_id_foreign")
+
+  @@index([user_id], map: "api_tokens_user_id_foreign")
+  @@map("api_tokens")
+}
+
+model productOptionGroup {
+  pcoid                Int                 @id @default(autoincrement()) @db.UnsignedInt
+  pid                  Int?                @db.UnsignedInt
+  label                String              @db.VarChar(32)
+  created_at           DateTime?           @default(now()) @db.Timestamp(0)
+  updated_at           DateTime?           @default(now()) @db.Timestamp(0)
+  products             product?            @relation(fields: [pid], references: [pid], onDelete: Cascade, onUpdate: NoAction, map: "product_option_groups_pid_foreign")
+  product_option_items productOptionItem[]
+
+  @@index([pid], map: "index_pid")
+  @@map("product_option_groups")
+}
+
+model productOptionItem {
+  pcoiid                Int                 @id @default(autoincrement()) @db.UnsignedInt
+  pcoid                 Int?                @db.UnsignedInt
+  label                 String              @db.VarChar(32)
+  value                 String              @db.VarChar(32)
+  created_at            DateTime?           @default(now()) @db.Timestamp(0)
+  updated_at            DateTime?           @default(now()) @db.Timestamp(0)
+  product_option_groups productOptionGroup? @relation(fields: [pcoid], references: [pcoid], onDelete: Cascade, onUpdate: NoAction, map: "product_option_items_pcoid_foreign")
+
+  @@index([pcoid], map: "index_pcoid")
+  @@map("product_option_items")
+}
+
+model productVariantGroup {
+  pcvid                 Int                  @id @default(autoincrement()) @db.UnsignedInt
+  pid                   Int?                 @db.UnsignedInt
+  sku                   String               @db.VarChar(32)
+  image_url             String               @db.VarChar(128)
+  created_at            DateTime?            @default(now()) @db.Timestamp(0)
+  updated_at            DateTime?            @default(now()) @db.Timestamp(0)
+  products              product?             @relation(fields: [pid], references: [pid], onDelete: Cascade, onUpdate: NoAction, map: "product_variant_groups_pid_foreign")
+  product_variant_items productVariantItem[]
+
+  @@index([pid], map: "index_pid_for_variants")
+  @@map("product_variant_groups")
+}
+
+model productVariantItem {
+  pcviid                 Int                  @id @default(autoincrement()) @db.UnsignedInt
+  pcvid                  Int?                 @db.UnsignedInt
+  option_group_id        Int?
+  option_item_id         Int?
+  product_variant_groups productVariantGroup? @relation(fields: [pcvid], references: [pcvid], onDelete: Cascade, onUpdate: NoAction, map: "product_variant_items_pcvid_foreign")
+
+  @@index([pcvid], map: "index_pcvid_for_variant_item")
+  @@map("product_variant_items")
+}
+
+model product {
+  pid                    Int                   @id @default(autoincrement()) @db.UnsignedInt
+  typename               products___typename?  @default(BASE) @map("__typename")
+  name                   String                @db.VarChar(64)
+  price                  Float                 @db.Float
+  product_image          String?               @db.VarChar(255)
+  created_at             DateTime?             @default(now()) @db.Timestamp(0)
+  updated_at             DateTime?             @default(now()) @db.Timestamp(0)
+  product_option_groups  productOptionGroup[]
+  product_variant_groups productVariantGroup[]
+
+  @@map("products")
+}
+
+model user {
+  uid        Int         @id @default(autoincrement()) @db.UnsignedInt
+  email      String      @unique(map: "users_email_unique") @db.VarChar(128)
+  password   String      @db.VarChar(256)
+  birthday   DateTime    @db.Timestamp(0)
+  role       users_role  @default(USER)
+  created_at DateTime?   @default(now()) @db.Timestamp(0)
+  updated_at DateTime?   @default(now()) @db.Timestamp(0)
+  api_tokens apiTokens[]
+
+  @@map("users")
+}
+
+enum products___typename {
+  BASE
+  CONFIGURABLE
+}
+
+enum users_role {
+  ADMIN
+  USER
+}
