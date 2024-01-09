@@ -23,7 +23,7 @@ export class AuthService {
       } catch (error) {
         throw error
       }
-    }
+    },
   }
   public readonly getters = {
     checkTokenIsAlive: async (token: string) => {
@@ -51,7 +51,10 @@ export class AuthService {
       } catch (error) {
         throw error
       }
-    }
+    },
+    getTokenData: (token: string) => {
+      return this.validation.validateJWTToken(token)
+    },
   }
   public readonly actions = {
     signIn: async (user: user) => {
@@ -59,6 +62,7 @@ export class AuthService {
         const accessToken = await this.jwt.signAsync({
           uid: user.uid,
           email: user.email,
+          role: user.role,
         })
         const expiresDate = new Date()
         expiresDate.setDate(new Date().getDate() + 14)

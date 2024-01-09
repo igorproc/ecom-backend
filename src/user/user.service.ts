@@ -7,8 +7,13 @@ import { AuthService } from '@/user/auth/auth.service'
 // Constants
 import { USER_PASSWORD_SALT } from '@/user/user.const'
 // Types & Interfaces
-import { EUserRoles, TUserCreate, TUserCreateInput, TUserLoginInput } from "@/user/user.types";
+import { EUserRoles, TUserCreate } from '@/user/user.types'
 import { TResponseError } from '@/types/global.types'
+// Validation DTO
+import type {
+  CreateUserDto as TUserCreateInput,
+  LoginUserDto as TUserLoginInput
+} from '@/user/dto/user.dto'
 
 @Injectable()
 export class UserService {
@@ -31,12 +36,17 @@ export class UserService {
     },
   }
   public readonly getters = {
-    getUserById: async (userId: number) => {
+    getUserData: async (token: string) => {
       try {
+        const tokenPayload = this.auth.getters.getTokenData(token)
+        if (!tokenPayload) {
+          return { code: { error: 500, message: 'Unhorized' } }
+        }
+
         return await this.prisma
           .user
           .findUnique({
-            where: { uid: userId }
+            where: { email: tokenPayload.email }
           })
       } catch (error) {
         throw error

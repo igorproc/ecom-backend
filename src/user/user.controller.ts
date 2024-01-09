@@ -12,11 +12,8 @@ import { UserService } from '@/user/user.service'
 import { AuthService } from '@/user/auth/auth.service'
 // Guards
 import { AuthGuard } from '@/user/auth/guards/auth.guard'
-// Types & Interfaces
-import {
-  TUserCreateInput,
-  TUserLoginInput,
-} from '@/user/user.types'
+// Validation DTO
+import { CreateUserDto, LoginUserDto } from '@/user/dto/user.dto'
 
 @Controller('user')
 export class UserController {
@@ -28,15 +25,15 @@ export class UserController {
   @Get('getUserData')
   @UseGuards(AuthGuard)
   async getUserById(
-    @Query('id') id: string
+    @Query('token') token: string
   ) {
-    if (!id) {
+    if (!token) {
       return {
         error: {code: 1, message: 'no required fields are send'}
       }
     }
 
-    return await this.userService.getters.getUserById(Number(id))
+    return await this.userService.getters.getUserData(token)
   }
 
   @Get('checkAuthStatus')
@@ -55,7 +52,7 @@ export class UserController {
 
   @Post('create')
   async createUser(
-    @Body() createData?: TUserCreateInput
+    @Body('createUserData') createData?: CreateUserDto
   ) {
     if (!createData) {
       return {
@@ -68,7 +65,7 @@ export class UserController {
 
   @Post('login')
   async loginUser(
-    @Body() loginData?: TUserLoginInput
+    @Body('userData') loginData?: LoginUserDto
   ) {
     if (!loginData) {
       return {
