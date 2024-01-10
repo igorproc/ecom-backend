@@ -95,8 +95,30 @@ model user {
   created_at DateTime?   @default(now()) @db.Timestamp(0)
   updated_at DateTime?   @default(now()) @db.Timestamp(0)
   api_tokens apiTokens[]
+  wishlist   wishlist[]
 
   @@map("users")
+}
+
+model wishlist {
+  wishlistId    Int            @id @default(autoincrement()) @map("wishlist_id") @db.UnsignedInt
+  wishlistToken String         @unique @default(uuid()) @map("wishlist_token") @db.VarChar(128)
+  isGuestCard   Boolean        @default(true) @map("is_guest_card")
+  userId        Int?           @map("user_id") @db.UnsignedInt
+  user          user?          @relation(fields: [userId], references: [uid], onDelete: Cascade, onUpdate: NoAction)
+  wishlistItems wishlistItem[]
+
+  @@map("wishlist")
+}
+
+model wishlistItem {
+  wishlistItemId Int      @id @default(autoincrement()) @map("wishlist_item_id") @db.UnsignedInt
+  wishlistToken  String   @map("wishlsit_token") @db.VarChar(128)
+  productId      Int      @map("product_id") @db.UnsignedInt
+  variantId      Int?      @map("variant_id") @db.UnsignedInt
+  wishlist       wishlist @relation(fields: [wishlistToken], references: [wishlistToken], onDelete: Cascade)
+
+  @@map("wishlist_item")
 }
 
 enum products___typename {

@@ -13,8 +13,8 @@ import type {
 } from '@/product/dto/product.dto'
 // Types & Interfaces
 import {
-  EAddProductTypes,
-} from '@/product/product.types'
+  EAddProductTypes, TProduct
+} from "@/product/product.types";
 
 @Injectable()
 export class ProductService {
@@ -38,14 +38,29 @@ export class ProductService {
         if (productData.typename === EAddProductTypes.base) {
           return productData
         }
-        const productOptions = await this.configurableProduct.getters.getProductOptions(productId)
-        const productVariants = await this.configurableProduct.getters.getProductVariants(productId)
+        const productOptions = await this.configurableProduct
+          .getters
+          .getProductOptions(productId)
+        const productVariants = await this.configurableProduct
+          .getters
+          .getProductVariants(productId)
 
         return {
           ...productData,
           productOptions,
           productVariants,
         }
+      } catch (error) {
+        throw error
+      }
+    },
+    productIsExists: async (productId: number) => {
+      try {
+        return !!await this.prisma
+          .product
+          .findUnique({
+            where: { pid: productId }
+          })
       } catch (error) {
         throw error
       }

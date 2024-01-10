@@ -11,6 +11,7 @@ export type TUserRoles = keyof typeof EUserRoles
 export type TUserCreate = {
   userData: TPrismaUser,
   token: string,
+  wishlistToken: string,
 }
 
 export type TUserJwtPayload = {

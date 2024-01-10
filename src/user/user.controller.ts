@@ -5,7 +5,8 @@ import {
   Get,
   Post,
   Query,
-  UseGuards,
+  Req,
+  UseGuards
 } from '@nestjs/common'
 // Services
 import { UserService } from '@/user/user.service'
@@ -23,7 +24,6 @@ export class UserController {
   ) {}
 
   @Get('getUserData')
-  @UseGuards(AuthGuard)
   async getUserById(
     @Query('token') token: string
   ) {
@@ -52,31 +52,32 @@ export class UserController {
 
   @Post('create')
   async createUser(
-    @Body('createUserData') createData?: CreateUserDto
+    @Body('createUserData') createData: CreateUserDto,
+    @Req() req: Request,
   ) {
-    if (!createData) {
-      return {
-        error: {code: 1, message: 'no required fields are send'}
-      }
+    const cookies = req['cookies']
+    if (!cookies['wishlist-id']) {
+      return { error: { code: 500, message: 'Wishlist token is not provided' } }
     }
 
-    return await this.userService.actions.createUser(createData)
+    return await this.userService.actions.createUser(createData, cookies['wishlist-id'])
   }
 
   @Post('login')
   async loginUser(
-    @Body('userData') loginData?: LoginUserDto
+    @Body('loginData') loginData: LoginUserDto,
+    @Req() req: Request,
   ) {
-    if (!loginData) {
-      return {
-        error: {code: 1, message: 'no required fields are send'}
-      }
+    const cookies = req['cookies']
+    if (!cookies['wishlist-id']) {
+      return { error: { code: 500, message: 'Wishlist token is not provided' } }
     }
 
-    return await this.userService.actions.loginUser(loginData)
+    return await this.userService.actions.loginUser(loginData, cookies['wishlist-id'])
   }
 
   @Post('logout')
+  @UseGuards(AuthGuard)
   async logoutUser(
     @Query('token') token: string
   ) {
