@@ -1,20 +1,28 @@
 // Node Deps
 import { Injectable } from '@nestjs/common'
 import { compareSync, hashSync } from "bcrypt";
+// Child Services
+import { AuthService } from '@/user/auth/auth.service'
+import { WishlistService } from '@/user/wishlist/wishlist.service'
 // Other Services
 import { PrismaService } from '@/prisma/prisma.service'
-import { AuthService } from '@/user/auth/auth.service'
 // Constants
 import { USER_PASSWORD_SALT } from '@/user/user.const'
 // Types & Interfaces
-import { EUserRoles, TUserCreate, TUserCreateInput, TUserLoginInput } from "@/user/user.types";
+import { EUserRoles, TUserCreate } from '@/user/user.types'
 import { TResponseError } from '@/types/global.types'
+// Validation DTO
+import type {
+  CreateUserDto as TUserCreateInput,
+  LoginUserDto as TUserLoginInput
+} from '@/user/dto/user.dto'
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly auth: AuthService,
+    private readonly wishlist: WishlistService,
   ) {}
 
   protected readonly validation = {
@@ -31,12 +39,22 @@ export class UserService {
     },
   }
   public readonly getters = {
-    getUserById: async (userId: number) => {
+    getUserData: async (token: string) => {
       try {
+        const tokenPayload = this.auth.getters.getTokenData(token)
+        if (!tokenPayload) {
+          return { code: { error: 500, message: 'Unhorized' } }
+        }
+
         return await this.prisma
           .user
           .findUnique({
-            where: { uid: userId }
+            where: { email: tokenPayload.email },
+            select: {
+              uid: true,
+              role: true,
+              birthday: true
+            }
           })
       } catch (error) {
         throw error
@@ -44,7 +62,7 @@ export class UserService {
     },
   }
   public readonly actions = {
-    createUser: async (userData: TUserCreateInput): Promise<TUserCreate | TResponseError> => {
+    createUser: async (userData: TUserCreateInput, guestWishlistToken: string): Promise<TUserCreate | TResponseError> => {
       try {
         const userEmailIsExists = await this.validation.checkEmailIsExists(userData.email)
         if (userEmailIsExists) {
@@ -76,15 +94,29 @@ export class UserService {
           }
         }
 
+        const wishlistToken = await this.wishlist
+          .actions
+          .createWishlistCart(userSecret)
+        if ('error' in wishlistToken) {
+          return wishlistToken
+        }
+
+        await this.wishlist
+          .actions
+          .assignWishlist({
+            authToken: userSecret,
+            guestWishlistToken: guestWishlistToken,
+          })
         return {
           userData: createdData,
-          token: userSecret
+          token: userSecret,
+          wishlistToken: wishlistToken.wishlistToken,
         }
       } catch (error) {
         throw error
       }
     },
-    loginUser: async (userData: TUserLoginInput): Promise<TUserCreate | TResponseError> => {
+    loginUser: async (userData: TUserLoginInput, guestWishlistToken: string): Promise<TUserCreate | TResponseError> => {
       try {
         const userCandidate = await this.validation.checkEmailIsExists(userData.email)
         if (!userCandidate) {
@@ -100,9 +132,18 @@ export class UserService {
           }
         }
 
+        const userSecret = await this.auth.actions.signIn(userCandidate)
+        const wishlistToken = await this.wishlist
+          .actions
+          .assignWishlist({ authToken: userSecret, guestWishlistToken })
+        if (typeof wishlistToken === 'object' && 'error' in wishlistToken) {
+          return wishlistToken
+        }
+
         return {
           userData: userCandidate,
-          token: await this.auth.actions.signIn(userCandidate)
+          token: userSecret,
+          wishlistToken: wishlistToken,
         }
       } catch (error) {
         throw error

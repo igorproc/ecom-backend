@@ -5,18 +5,16 @@ import {
   Get,
   Post,
   Query,
-  UseGuards,
+  Req,
+  UseGuards
 } from '@nestjs/common'
 // Services
 import { UserService } from '@/user/user.service'
 import { AuthService } from '@/user/auth/auth.service'
 // Guards
 import { AuthGuard } from '@/user/auth/guards/auth.guard'
-// Types & Interfaces
-import {
-  TUserCreateInput,
-  TUserLoginInput,
-} from '@/user/user.types'
+// Validation DTO
+import { CreateUserDto, LoginUserDto } from '@/user/dto/user.dto'
 
 @Controller('user')
 export class UserController {
@@ -26,17 +24,16 @@ export class UserController {
   ) {}
 
   @Get('getUserData')
-  @UseGuards(AuthGuard)
   async getUserById(
-    @Query('id') id: string
+    @Query('token') token: string
   ) {
-    if (!id) {
+    if (!token) {
       return {
         error: {code: 1, message: 'no required fields are send'}
       }
     }
 
-    return await this.userService.getters.getUserById(Number(id))
+    return await this.userService.getters.getUserData(token)
   }
 
   @Get('checkAuthStatus')
@@ -55,31 +52,32 @@ export class UserController {
 
   @Post('create')
   async createUser(
-    @Body() createData?: TUserCreateInput
+    @Body('createUserData') createData: CreateUserDto,
+    @Req() req: Request,
   ) {
-    if (!createData) {
-      return {
-        error: {code: 1, message: 'no required fields are send'}
-      }
+    const cookies = req['cookies']
+    if (!cookies['wishlist-id']) {
+      return { error: { code: 500, message: 'Wishlist token is not provided' } }
     }
 
-    return await this.userService.actions.createUser(createData)
+    return await this.userService.actions.createUser(createData, cookies['wishlist-id'])
   }
 
   @Post('login')
   async loginUser(
-    @Body() loginData?: TUserLoginInput
+    @Body('loginData') loginData: LoginUserDto,
+    @Req() req: Request,
   ) {
-    if (!loginData) {
-      return {
-        error: {code: 1, message: 'no required fields are send'}
-      }
+    const cookies = req['cookies']
+    if (!cookies['wishlist-id']) {
+      return { error: { code: 500, message: 'Wishlist token is not provided' } }
     }
 
-    return await this.userService.actions.loginUser(loginData)
+    return await this.userService.actions.loginUser(loginData, cookies['wishlist-id'])
   }
 
   @Post('logout')
+  @UseGuards(AuthGuard)
   async logoutUser(
     @Query('token') token: string
   ) {
