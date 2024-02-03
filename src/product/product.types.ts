@@ -9,7 +9,7 @@ export enum EAddProductTypes {
 export type TProduct = TPrismaProduct & {
   productOptions: TConfigurableProductOptions,
   productVariants: TConfigurableProductVariants,
-}
+} | TPrismaProduct
 
 // Configurable Types
 export type TConfigurableProductOptions = {

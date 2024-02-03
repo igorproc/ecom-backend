@@ -3,6 +3,11 @@ export type TWishlistProductId = {
   variantId?: number | null,
 }
 
+export type TWishlistReassignCartsInput = {
+  guestWishlistToken: string,
+  userWishlistToken: string,
+}
+
 export type TWishlistAssignCartsInput = {
   guestWishlistToken: string,
   authToken: string,

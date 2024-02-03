@@ -11,6 +11,7 @@ async function bootstrap() {
   const isProd = process.env.APP_MODE === 'production'
   const app = await NestFactory.create(AppModule)
 
+  app.setGlobalPrefix('/api')
   app.use(
     cookieParser()
   )

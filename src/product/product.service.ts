@@ -13,8 +13,9 @@ import type {
 } from '@/product/dto/product.dto'
 // Types & Interfaces
 import {
-  EAddProductTypes, TProduct
-} from "@/product/product.types";
+  EAddProductTypes,
+  TProduct
+} from '@/product/product.types'
 
 @Injectable()
 export class ProductService {
@@ -24,6 +25,26 @@ export class ProductService {
   ) {}
 
   public readonly getters = {
+    getProductList: async () => {
+      try {
+        const productIdsList = await this.prisma
+          .product
+          .findMany({
+            select: { pid: true }
+          })
+
+        const productList: TProduct[] = []
+        for (const item of productIdsList) {
+          productList.push(
+            await this.getters.getProductById(item.pid)
+          )
+        }
+
+        return productList
+      } catch (error) {
+        throw error
+      }
+    },
     getProductById: async (productId: number) => {
       try {
         const productData = await this.prisma

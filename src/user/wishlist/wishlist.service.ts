@@ -14,8 +14,8 @@ import {
 import { TProduct } from '@/product/product.types'
 import {
   TWishlistAssignCartsInput,
-  TWishlistProductId
-} from '@/user/wishlist/wishlist.types'
+  TWishlistProductId, TWishlistReassignCartsInput
+} from "@/user/wishlist/wishlist.types";
 // Utils
 import { getArrayDifference } from '@utils/getArrayDiffernce.util'
 
@@ -174,6 +174,23 @@ export class WishlistService {
           })
 
         return { isDeleted: !!productIsDeleted.count }
+      } catch (error) {
+        throw error
+      }
+    },
+    reassignWishlist: async (wishlistTokens: TWishlistReassignCartsInput) => {
+      try {
+        const isReassign = await this.prisma
+          .wishlist
+          .updateMany({
+            where: { wishlistToken: wishlistTokens.guestWishlistToken },
+            data: { wishlistToken: wishlistTokens.userWishlistToken },
+          })
+
+        if (isReassign.count) {
+          return wishlistTokens.userWishlistToken
+        }
+        return null
       } catch (error) {
         throw error
       }

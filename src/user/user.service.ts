@@ -1,6 +1,7 @@
 // Node Deps
 import { Injectable } from '@nestjs/common'
-import { compareSync, hashSync } from "bcrypt";
+import { compareSync, hashSync } from 'bcrypt'
+import { v4 as generateUUID } from 'uuid'
 // Child Services
 import { AuthService } from '@/user/auth/auth.service'
 import { WishlistService } from '@/user/wishlist/wishlist.service'
@@ -52,6 +53,7 @@ export class UserService {
             where: { email: tokenPayload.email },
             select: {
               uid: true,
+              email: true,
               role: true,
               birthday: true
             }
@@ -94,23 +96,17 @@ export class UserService {
           }
         }
 
-        const wishlistToken = await this.wishlist
+       const wishlistToken = await this.wishlist
           .actions
-          .createWishlistCart(userSecret)
-        if ('error' in wishlistToken) {
-          return wishlistToken
-        }
-
-        await this.wishlist
-          .actions
-          .assignWishlist({
-            authToken: userSecret,
+          .reassignWishlist({
             guestWishlistToken: guestWishlistToken,
+            userWishlistToken: generateUUID(),
           })
+
         return {
           userData: createdData,
           token: userSecret,
-          wishlistToken: wishlistToken.wishlistToken,
+          wishlistToken: wishlistToken,
         }
       } catch (error) {
         throw error
@@ -136,6 +132,7 @@ export class UserService {
         const wishlistToken = await this.wishlist
           .actions
           .assignWishlist({ authToken: userSecret, guestWishlistToken })
+
         if (typeof wishlistToken === 'object' && 'error' in wishlistToken) {
           return wishlistToken
         }
