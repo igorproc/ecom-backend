@@ -3,6 +3,15 @@ import { IsOptional, IsNumber, IsString } from 'class-validator'
 // Types & Interfaces
 import { EAddProductTypes } from '@/product/product.types'
 
+export class GetProductListDto {
+  @IsNumber()
+  page: number
+
+  @IsOptional()
+  @IsNumber()
+  count?: number
+}
+
 export class CreateProductDto {
   @IsString()
   name: string

@@ -23,7 +23,11 @@ import { Roles } from '@/user/auth/decorators.roles'
 import { ProductService } from '@/product/product.service'
 import { UploadService } from '@/upload/upload.service'
 // Validate DTO
-import { CreateProductDto, EditProductDto } from '@/product/dto/product.dto'
+import {
+  GetProductListDto,
+  CreateProductDto,
+  EditProductDto
+} from '@/product/dto/product.dto'
 
 @Controller('product')
 export class ProductController {
@@ -36,7 +40,16 @@ export class ProductController {
   async getAllProducts() {
     return await this.productService
       .getters
-      .getProductList()
+      .getAllProducts()
+  }
+
+  @Get('list')
+  async getProductListByPage(
+    @Body() pageData: { page: number, count?: number }
+  ) {
+    return await this.productService
+      .getters
+      .getProductList(pageData.page, pageData.count)
   }
 
   @Get(':id')
@@ -55,6 +68,8 @@ export class ProductController {
   }
 
   @Post('uploadImage')
+  @Roles(['admin'])
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('image'))
   async uploadImage(
     @UploadedFile(

@@ -14,9 +14,11 @@ export class UploadService {
   public actions = {
     uploadFile: async (file: Express.Multer.File) => {
       try {
+        const fileName = generateFileName(file.originalname)
+
         const fileIsUploaded = await this.s3.putObject({
           Bucket: process.env.S3_BUCKET_NAME,
-          Key: generateFileName(file.originalname),
+          Key: fileName,
           Body: file.buffer,
           ACL: 'public-read',
         })
@@ -24,7 +26,7 @@ export class UploadService {
         if (fileIsUploaded.$metadata.httpStatusCode !== 200) {
           return
         }
-        return `${process.env.S3_URL}/${process.env.S3_BUCKET_NAME}/${generateFileName(file.originalname)}`
+        return `${process.env.S3_URL}/${process.env.S3_BUCKET_NAME}/${fileName}`
       } catch (error) {
         throw error
       }

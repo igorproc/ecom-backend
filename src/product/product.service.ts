@@ -11,6 +11,8 @@ import type {
   CreateProductDto as TAddProductInput,
   EditProductDto as TEditProductInput,
 } from '@/product/dto/product.dto'
+// Consts
+import { DEFAULT_PAGE_SIZE } from '@/product/const/product.const'
 // Types & Interfaces
 import {
   EAddProductTypes,
@@ -25,11 +27,44 @@ export class ProductService {
   ) {}
 
   public readonly getters = {
-    getProductList: async () => {
+    getAllProducts: async () => {
       try {
         const productIdsList = await this.prisma
           .product
           .findMany({
+            select: { pid: true }
+          })
+
+        const productList: TProduct[] = []
+        for (const item of productIdsList) {
+          productList.push(
+            await this.getters.getProductById(item.pid)
+          )
+        }
+
+        return productList
+      } catch (error) {
+        throw error
+      }
+    },
+
+    getProductList: async (page: number, count?: number) => {
+      try {
+        const skipValue = () => {
+          if (!page || page === 1) {
+            return 0
+          }
+          if (!count) {
+            return page * DEFAULT_PAGE_SIZE
+          }
+          return page * count
+        }
+
+        const productIdsList = await this.prisma
+          .product
+          .findMany({
+            skip: skipValue(),
+            take: count || DEFAULT_PAGE_SIZE,
             select: { pid: true }
           })
 
@@ -52,12 +87,19 @@ export class ProductService {
           .findUnique({
             where: { pid: productId }
           })
-
         if (!productData) {
           return null
         }
+
+        const formattedProductData = {
+          pid: productData.pid,
+          __typename: productData.typename,
+          productImage: productData.productImage,
+          price: productData.price,
+          name: productData.name,
+        }
         if (productData.typename === EAddProductTypes.base) {
-          return productData
+          return formattedProductData
         }
         const productOptions = await this.configurableProduct
           .getters
@@ -67,7 +109,7 @@ export class ProductService {
           .getProductVariants(productId)
 
         return {
-          ...productData,
+          ...formattedProductData,
           productOptions,
           productVariants,
         }
