@@ -6,67 +6,64 @@ import { product as TPrismaProduct } from '@prisma/client'
 import { PrismaService } from '@/prisma/prisma.service'
 // Child Services
 import { ConfigurableProductService } from '@/product/configurable/configurable.service'
+import { BrandService } from '@/product/brand/brand.service'
 // Validation DTO
 import type {
+  GetProductListDto as TGetProductListInput,
   CreateProductDto as TAddProductInput,
   EditProductDto as TEditProductInput,
 } from '@/product/dto/product.dto'
-// Consts
-import { DEFAULT_PAGE_SIZE } from '@/product/const/product.const'
 // Types & Interfaces
 import {
   EAddProductTypes,
   TProduct
 } from '@/product/product.types'
+// Utils
+import { getPageDataSize } from '@/product/utils/getPageData'
+// Constants
+import { DEFAULT_PAGE_SIZE } from '@/product/const/product.const'
 
 @Injectable()
 export class ProductService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly configurableProduct: ConfigurableProductService,
+    private readonly brand: BrandService,
   ) {}
 
   public readonly getters = {
-    getAllProducts: async () => {
+    getProductList: async (filterData: TGetProductListInput) => {
       try {
-        const productIdsList = await this.prisma
-          .product
-          .findMany({
-            select: { pid: true }
-          })
-
-        const productList: TProduct[] = []
-        for (const item of productIdsList) {
-          productList.push(
-            await this.getters.getProductById(item.pid)
-          )
+        type TSqlFilters = {
+          skip: number,
+          take: number,
+          select: { pid: boolean },
+          where: { bid?: number },
         }
 
-        return productList
-      } catch (error) {
-        throw error
-      }
-    },
+        const skipValue = getPageDataSize(
+          filterData.page,
+          filterData.count,
+          DEFAULT_PAGE_SIZE,
+        )
+        const filters: TSqlFilters = {
+          skip: skipValue.skip,
+          take: skipValue.values,
+          select: { pid: true },
+          where: {},
+        }
 
-    getProductList: async (page: number, count?: number) => {
-      try {
-        const skipValue = () => {
-          if (!page || page === 1) {
-            return 0
-          }
-          if (!count) {
-            return page * DEFAULT_PAGE_SIZE
-          }
-          return page * count
+        if (filterData?.brandName) {
+          const brandData = await this.brand
+            .getters
+            .getBrandDataByName(filterData.brandName)
+
+          filters.where.bid = brandData.bid
         }
 
         const productIdsList = await this.prisma
           .product
-          .findMany({
-            skip: skipValue(),
-            take: count || DEFAULT_PAGE_SIZE,
-            select: { pid: true }
-          })
+          .findMany(filters)
 
         const productList: TProduct[] = []
         for (const item of productIdsList) {
@@ -94,6 +91,7 @@ export class ProductService {
         const formattedProductData = {
           pid: productData.pid,
           __typename: productData.typename,
+          brandId: productData.bid,
           productImage: productData.productImage,
           price: productData.price,
           name: productData.name,
@@ -140,6 +138,7 @@ export class ProductService {
               name: productData.name,
               price: productData.price,
               typename: EAddProductTypes[productData.type] || EAddProductTypes.base,
+              bid: productData.brandId,
               productImage: productData.productImage,
             }
           })

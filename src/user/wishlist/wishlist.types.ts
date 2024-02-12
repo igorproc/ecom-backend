@@ -1,4 +1,5 @@
 export type TWishlistProductId = {
+  itemId: number,
   productId: number,
   variantId?: number | null,
 }

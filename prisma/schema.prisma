@@ -72,16 +72,30 @@ model productVariantItem {
   @@map("product_variant_items")
 }
 
+model brand {
+  bid       Int       @id @default(autoincrement()) @db.UnsignedInt
+  name      String    @unique(map: "brands_name_unique") @db.VarChar(64)
+  imageUrl  String    @db.VarChar(256)
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamp(0)
+  product   product[]
+
+  @@map("brands")
+}
+
 model product {
   pid                    Int                   @id @default(autoincrement()) @db.UnsignedInt
   typename               products___typename?  @default(BASE) @map("__typename")
   name                   String                @db.VarChar(64)
   price                  Float                 @db.Float
   productImage           String?               @map("product_image") @db.VarChar(255)
+  bid                    Int?                  @db.UnsignedInt
   createdAt              DateTime?             @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt              DateTime?             @default(now()) @map("updated_at") @db.Timestamp(0)
-  product_option_groups  productOptionGroup[]
+  // Relations
   product_variant_groups productVariantGroup[]
+  brand_relation         brand?                @relation(fields: [bid], references: [bid], onDelete: Cascade)
+  product_option_groups  productOptionGroup[]
 
   @@map("products")
 }
@@ -115,7 +129,7 @@ model wishlistItem {
   wishlistItemId Int      @id @default(autoincrement()) @map("wishlist_item_id") @db.UnsignedInt
   wishlistToken  String   @map("wishlsit_token") @db.VarChar(128)
   productId      Int      @map("product_id") @db.UnsignedInt
-  variantId      Int?      @map("variant_id") @db.UnsignedInt
+  variantId      Int?     @map("variant_id") @db.UnsignedInt
   wishlist       wishlist @relation(fields: [wishlistToken], references: [wishlistToken], onDelete: Cascade)
 
   @@map("wishlist_item")

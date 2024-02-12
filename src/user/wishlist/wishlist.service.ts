@@ -8,14 +8,16 @@ import { ProductService } from '@/product/product.service'
 import { product as TPrismaProduct } from '@prisma/client'
 // Validation DTO
 import {
-  AddProductToWishlistDto as TUserWishlistAddProduct,
+  AddProductToWishlistDto as TUserWishlistAddProductInput,
+  RemoveProductFromWishlistDto as TUserWishlistRemoveProductInput,
 } from '@/user/wishlist/dto/wishlist.dto'
 // Types & Interfaces
 import { TProduct } from '@/product/product.types'
 import {
   TWishlistAssignCartsInput,
-  TWishlistProductId, TWishlistReassignCartsInput
-} from "@/user/wishlist/wishlist.types";
+  TWishlistProductId,
+  TWishlistReassignCartsInput
+} from '@/user/wishlist/wishlist.types'
 // Utils
 import { getArrayDifference } from '@utils/getArrayDiffernce.util'
 
@@ -28,7 +30,7 @@ export class WishlistService {
   ) {}
 
   protected readonly validation = {
-    productIsExistsInWishlist: async (productData: TUserWishlistAddProduct) => {
+    productIsExistsInWishlist: async (productData: TUserWishlistAddProductInput) => {
       try {
         return await this.prisma
           .wishlistItem
@@ -44,6 +46,7 @@ export class WishlistService {
   public readonly getters = {
     getWishlistDataWithProductIds: async (wishlistToken: string) => {
       try {
+        console.log(wishlistToken)
         const wishlistData = await this.prisma.wishlist.findFirst({
           where: { wishlistToken }
         })
@@ -53,6 +56,7 @@ export class WishlistService {
 
         const wishlistProductIds = wishlistProducts.map(wishlistProduct => {
           const data: TWishlistProductId = {
+            itemId: wishlistProduct.wishlistItemId,
             productId: wishlistProduct.productId
           }
           if (wishlistProduct.variantId) {
@@ -145,7 +149,7 @@ export class WishlistService {
         throw error
       }
     },
-    addProductToWishlistItem: async (productData: TUserWishlistAddProduct) => {
+    addProductToWishlistItem: async (productData: TUserWishlistAddProductInput) => {
       try {
         const productIsExists = await this.product.getters.productIsExists(productData.productId)
         if (!productIsExists) {
@@ -160,20 +164,30 @@ export class WishlistService {
         const productIsAdded = await this.prisma
           .wishlistItem
           .create({ data: productData })
-        return { productIsAdded: !!productIsAdded }
+
+        return {
+          itemId: productIsAdded.wishlistItemId,
+          productId: productIsAdded.productId,
+          variantId: productIsAdded.variantId
+        }
       } catch (error) {
         throw error
       }
     },
-    deleteProductFromWishlist: async (productData: TUserWishlistAddProduct) => {
+    deleteProductFromWishlist: async (productData: TUserWishlistRemoveProductInput) => {
       try {
-        const productIsDeleted = await this.prisma
-          .wishlistItem
-          .deleteMany({
-            where: productData
-          })
+        console.log(productData)
 
-        return { isDeleted: !!productIsDeleted.count }
+        return await this.prisma
+          .wishlistItem
+          .delete({
+            where: productData,
+            select: {
+              wishlistItemId: true,
+              productId: true,
+              variantId: true,
+            }
+          })
       } catch (error) {
         throw error
       }

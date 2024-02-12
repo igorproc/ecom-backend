@@ -4,13 +4,16 @@ import * as process from 'process'
 // Util Modules
 import { ConfigModule } from '@nestjs/config'
 import { S3Module } from 'nestjs-s3'
+import { ScheduleModule } from '@nestjs/schedule'
 // Root Modules
 import { UserModule } from '@/user/user.module'
 import { ProductModule } from './product/product.module'
+import { TasksModule } from './tasks/tasks.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    ScheduleModule.forRoot(),
     S3Module.forRoot({
       config: {
         credentials: {
@@ -24,6 +27,7 @@ import { ProductModule } from './product/product.module'
     }),
     UserModule,
     ProductModule,
+    TasksModule,
   ],
 })
 export class AppModule {}

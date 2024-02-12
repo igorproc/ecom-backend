@@ -1,0 +1,15 @@
+-- AlterTable
+ALTER TABLE `products` ADD COLUMN `brandBid` INTEGER UNSIGNED NULL;
+
+-- CreateTable
+CREATE TABLE `brands` (
+    `bid` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(64) NOT NULL,
+    `created_at` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `updated_at` TIMESTAMP(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+
+    PRIMARY KEY (`bid`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `products` ADD CONSTRAINT `products_brandBid_fkey` FOREIGN KEY (`brandBid`) REFERENCES `brands`(`bid`) ON DELETE SET NULL ON UPDATE CASCADE;

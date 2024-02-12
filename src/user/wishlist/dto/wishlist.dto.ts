@@ -11,3 +11,11 @@ export class AddProductToWishlistDto {
   @IsNumber()
   variantId: number
 }
+
+export class RemoveProductFromWishlistDto {
+  @IsUUID()
+  wishlistToken: string
+
+  @IsNumber()
+  wishlistItemId: number
+}

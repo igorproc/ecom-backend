@@ -7,8 +7,6 @@ import { AuthService } from '@/user/auth/auth.service'
 import { WishlistService } from '@/user/wishlist/wishlist.service'
 // Other Services
 import { PrismaService } from '@/prisma/prisma.service'
-// Constants
-import { USER_PASSWORD_SALT } from '@/user/user.const'
 // Types & Interfaces
 import { EUserRoles, TUserCreate } from '@/user/user.types'
 import { TResponseError } from '@/types/global.types'
@@ -78,7 +76,7 @@ export class UserService {
           .create({
             data: {
               email: userData.email,
-              password: hashSync(userData.password, USER_PASSWORD_SALT),
+              password: hashSync(userData.password, 10),
               birthday: new Date(userData.birthday),
               role: EUserRoles[userData.role] || EUserRoles.user
             }

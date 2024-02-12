@@ -7,9 +7,11 @@ export class GetProductListDto {
   @IsNumber()
   page: number
 
-  @IsOptional()
   @IsNumber()
-  count?: number
+  count: number
+
+  @IsString()
+  brandName?: string
 }
 
 export class CreateProductDto {
@@ -18,6 +20,9 @@ export class CreateProductDto {
 
   @IsNumber()
   price: number
+
+  @IsNumber()
+  brandId: number
 
   @IsString()
   type: keyof typeof EAddProductTypes

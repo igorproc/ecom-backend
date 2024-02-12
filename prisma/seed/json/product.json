@@ -1,0 +1,95 @@
+{
+  "products": [
+    {
+      "name": "Adidas EQT",
+      "price": 192.93,
+      "bid": 1,
+      "typename": "BASE",
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/adidas-eqt-support-adv-19084-1.jpg"
+    },
+    {
+      "name": "Reebok Club C85",
+      "price": 35.99,
+      "bid": 2,
+      "typename": "CONFIGURABLE",
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/69dd2296-658f-45e4-a5a7-80d649.jpg"
+    },
+    {
+      "name": "Nike Retro Low",
+      "price": 78.5,
+      "bid": 3,
+      "typename": "BASE",
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/f63815f6-544c-455c-82e2-ac86bb.jpg"
+    }
+  ],
+  "productsOptions": {
+    "groups": [
+      {
+        "pid": 2,
+        "label": "COLOR"
+      },
+      {
+        "pid": 2,
+        "label": "SIZE"
+      }
+    ],
+    "items": [
+      {
+        "pcoid": 1,
+        "label": "Red",
+        "value": "#ff0000"
+      },
+      {
+        "pcoid": 1,
+        "label": "Blue",
+        "value": "#0000ff"
+      },
+      {
+        "pcoid": 2,
+        "label": "M",
+        "value": "931"
+      },
+      {
+        "pcoid": 2,
+        "label": "L",
+        "value": "932"
+      }
+    ]
+  },
+  "productVariants": {
+    "groups": [
+      {
+        "pid": 2,
+        "sku": "reebok-club-851",
+        "imageUrl": ""
+      },
+      {
+        "pid": 2,
+        "sku": "reebok-club-852",
+        "imageUrl": ""
+      }
+    ],
+    "items": [
+      {
+        "pcvid": 1,
+        "optionGroupId": 1,
+        "optionItemId": 1
+      },
+      {
+        "pcvid": 1,
+        "optionGroupId": 2,
+        "optionItemId": 3
+      },
+      {
+        "pcvid": 2,
+        "optionGroupId": 1,
+        "optionItemId": 2
+      },
+      {
+        "pcvid": 2,
+        "optionGroupId": 2,
+        "optionItemId": 4
+      }
+    ]
+  }
+}

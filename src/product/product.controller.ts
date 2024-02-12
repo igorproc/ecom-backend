@@ -24,7 +24,6 @@ import { ProductService } from '@/product/product.service'
 import { UploadService } from '@/upload/upload.service'
 // Validate DTO
 import {
-  GetProductListDto,
   CreateProductDto,
   EditProductDto
 } from '@/product/dto/product.dto'
@@ -36,20 +35,19 @@ export class ProductController {
     private readonly uploadService: UploadService,
   ) {}
 
-  @Get('all')
-  async getAllProducts() {
-    return await this.productService
-      .getters
-      .getAllProducts()
-  }
-
   @Get('list')
   async getProductListByPage(
-    @Body() pageData: { page: number, count?: number }
+    @Query('page', new ParseIntPipe()) page: string,
+    @Query('size', new ParseIntPipe()) size: string,
+    @Query('brand') brand?: string,
   ) {
     return await this.productService
       .getters
-      .getProductList(pageData.page, pageData.count)
+      .getProductList({
+        page: Number(page),
+        count: Number(size),
+        brandName: brand || null,
+      })
   }
 
   @Get(':id')

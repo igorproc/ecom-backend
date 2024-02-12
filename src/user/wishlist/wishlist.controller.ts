@@ -1,10 +1,11 @@
 // Node Deps
-import { Body, Controller, Get, Post, Req } from '@nestjs/common'
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common'
 // Other Services
 import { WishlistService } from '@/user/wishlist/wishlist.service'
 // Validation DTO
 import {
   AddProductToWishlistDto,
+  RemoveProductFromWishlistDto
 } from '@/user/wishlist/dto/wishlist.dto'
 
 @Controller('user/wishlist')
@@ -15,22 +16,20 @@ export class WishlistController {
 
   @Get('wishlistData')
   async getWishlistData(
-    @Req() req: Request
+    @Query('wishlistToken') wishlistToken: string
   ) {
-    const cookies = req['cookies']
     return await this.wishlistService
       .getters
-      .getWishlistDataWithProductIds(cookies['wishlist-id'])
+      .getWishlistDataWithProductIds(wishlistToken)
   }
 
   @Get('wishlistProduct')
   async getWishlistProducts(
-    @Req() req: Request
+    @Query('wishlistToken') wishlistToken: string
   ) {
-    const cookies = req['cookies']
     return await this.wishlistService
       .getters
-      .getWishlistProducts(cookies['wishlist-id'])
+      .getWishlistProducts(wishlistToken)
   }
 
   @Post('create')
@@ -53,7 +52,7 @@ export class WishlistController {
 
   @Post('removeProduct')
   async removeProductFromWishlist(
-    @Body('productData') productData: AddProductToWishlistDto
+    @Body('productData') productData: RemoveProductFromWishlistDto
   ) {
     return await this
       .wishlistService
