@@ -1,0 +1,23 @@
+{
+  "wishlists": [
+    {
+      "isGuestCard": false,
+      "userId": 1
+    },
+    {
+      "isGuestCard": false,
+      "userId": 2
+    }
+  ],
+  "wishlistItems": [
+    {
+      "wishlistCardId": 2,
+      "productId": 1
+    },
+    {
+      "wishlistCardId": 2,
+      "productId": 2,
+      "variantId": 1
+    }
+  ]
+}

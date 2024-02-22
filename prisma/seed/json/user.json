@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "email": "admin@specto.su",
+      "password": "test1qwe",
+      "role": "ADMIN",
+      "birthday": "1997-07-16T19:20:30.451Z"
+    },
+    {
+      "email": "user_test_1@specto.su",
+      "password": "userTest_2",
+      "role": "USER",
+      "birthday": "1997-07-16T19:20:30.451Z"
+    }
+  ]
+}
