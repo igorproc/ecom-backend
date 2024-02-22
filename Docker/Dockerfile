@@ -29,8 +29,8 @@ RUN npm ci
 
 COPY .. .
 
-RUN chmod +x "./Docker/scripts/${ENVIRONMENT_NAME}.sh"
-
 RUN /bin/sh -c "ls -a"
 
 EXPOSE 3000
+
+CMD ["chmod", "+x", "./Docker/scripts/${ENVIRONMENT_NAME}.sh"]
