@@ -9,12 +9,10 @@ import { wishlistSeed } from './seeds/wishlist'
 const prisma = new PrismaClient()
 
 async function main() {
-  await Promise.all([
-    userSeed(),
-    brandSeed(),
-    productSeed(),
-    wishlistSeed(),
-  ])
+   await userSeed()
+   await brandSeed()
+   await productSeed()
+   await wishlistSeed()
 }
 
 main()

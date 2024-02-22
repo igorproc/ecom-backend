@@ -1,6 +1,7 @@
 // Node Deps
 import { Injectable } from '@nestjs/common'
 import { Cron } from '@nestjs/schedule'
+import moment from 'moment'
 // Other Services
 import { PrismaService } from '@/prisma/prisma.service'
 
@@ -11,15 +12,14 @@ export class TasksService {
   ) {}
   @Cron('* 12 * * * *')
   async clearExpiredTokens () {
-    const currentDate = new Date()
-    currentDate.setDate(Date.now())
+    const currentDate = moment().toISOString()
 
     await this.prisma
       .apiTokens
       .deleteMany({
         where: {
           expires_at: {
-            lt: currentDate.toISOString()
+            lt: currentDate
           }
         }
       })

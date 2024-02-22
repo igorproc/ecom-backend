@@ -1,25 +1,25 @@
 {
   "products": [
     {
-      "name": "Adidas EQT",
+      "name": "Syltherine",
       "price": 192.93,
       "bid": 1,
       "typename": "BASE",
-      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/adidas-eqt-support-adv-19084-1.jpg"
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/product-1.png"
     },
     {
-      "name": "Reebok Club C85",
+      "name": "Lolito",
       "price": 35.99,
       "bid": 2,
       "typename": "CONFIGURABLE",
-      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/69dd2296-658f-45e4-a5a7-80d649.jpg"
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/product-3.png"
     },
     {
-      "name": "Nike Retro Low",
+      "name": "Respira",
       "price": 78.5,
       "bid": 3,
       "typename": "BASE",
-      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/f63815f6-544c-455c-82e2-ac86bb.jpg"
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/product-4.png"
     }
   ],
   "productsOptions": {

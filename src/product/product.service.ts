@@ -20,6 +20,7 @@ import {
 } from '@/product/product.types'
 // Utils
 import { getPageDataSize } from '@/product/utils/getPageData'
+import { getTotalPagesBySize } from '@/product/utils/totalPagesBySize'
 // Constants
 import { DEFAULT_PAGE_SIZE } from '@/product/const/product.const'
 
@@ -32,6 +33,27 @@ export class ProductService {
   ) {}
 
   public readonly getters = {
+    getProductCount: async (brandId: number | null) => {
+      try {
+        const filters: {
+          where: { bid?: number }
+        } = {
+          where: {}
+        }
+
+        if (brandId) {
+          filters.where.bid = brandId
+        }
+
+        return await this
+          .prisma
+          .product
+          .count(filters)
+      } catch (error) {
+        throw error
+      }
+    },
+
     getProductList: async (filterData: TGetProductListInput) => {
       try {
         type TSqlFilters = {
@@ -72,7 +94,12 @@ export class ProductService {
           )
         }
 
-        return productList
+        return {
+          products: productList,
+          totalProducts: await this
+            .getters
+            .getProductCount(filters.where?.bid || null)
+        }
       } catch (error) {
         throw error
       }

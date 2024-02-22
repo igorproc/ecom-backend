@@ -1,15 +1,15 @@
 {
   "brands": [
     {
-      "name": "Adidas",
+      "name": "IKEA",
       "imageUrl": ""
     },
     {
-      "name": "Reebok",
+      "name": "Snug Design",
       "imageUrl": ""
     },
     {
-      "name": "Nike",
+      "name": "Classic Design",
       "imageUrl": ""
     }
   ]

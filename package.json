@@ -14,7 +14,8 @@
     "start:prod": "node dist/main"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed/main.ts"
+    "seed": "ts-node prisma/seed/main.ts",
+    "schema": "prisma/schema.prisma"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.504.0",
@@ -54,6 +55,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "jest": "^29.5.0",
+    "moment": "^2.30.1",
     "prettier": "^3.0.0",
     "prisma": "^5.7.1",
     "source-map-support": "^0.5.21",

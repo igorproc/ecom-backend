@@ -46,7 +46,6 @@ export class WishlistService {
   public readonly getters = {
     getWishlistDataWithProductIds: async (wishlistToken: string) => {
       try {
-        console.log(wishlistToken)
         const wishlistData = await this.prisma.wishlist.findFirst({
           where: { wishlistToken }
         })
@@ -176,8 +175,6 @@ export class WishlistService {
     },
     deleteProductFromWishlist: async (productData: TUserWishlistRemoveProductInput) => {
       try {
-        console.log(productData)
-
         return await this.prisma
           .wishlistItem
           .delete({
