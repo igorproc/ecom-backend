@@ -35,4 +35,4 @@ EXPOSE 3000
 
 SHELL ["bash", "-c"]
 
-RUN chmod +x ./Docker/scripts/${ENVIRONMENT_NAME}.sh
+CMD ["chmod", "-x", "./Docker/scripts/${ENVIRONMENT_NAME}.sh"]
