@@ -10,20 +10,20 @@ export class TasksService {
   constructor(
     private readonly prisma: PrismaService
   ) {}
-  @Cron('* 12 * * * *')
-  async clearExpiredTokens () {
-    const currentDate = moment().toISOString()
-
-    await this.prisma
-      .apiTokens
-      .deleteMany({
-        where: {
-          expires_at: {
-            lt: currentDate
-          }
-        }
-      })
-
-    console.log('All Expired tokens are deleted')
-  }
+  // @Cron('* 12 * * * *')
+  // async clearExpiredTokens () {
+  //   const currentDate = moment().toISOString()
+  //
+  //   await this.prisma
+  //     .apiTokens
+  //     .deleteMany({
+  //       where: {
+  //         expires_at: {
+  //           lt: currentDate
+  //         }
+  //       }
+  //     })
+  //
+  //   console.log('All Expired tokens are deleted')
+  // }
 }
