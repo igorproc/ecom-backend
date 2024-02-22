@@ -11,7 +11,9 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/src/main"
+    "start:prod": "node dist/src/main",
+    "deploy:dev": "prisma migrate dev && nest start --watch",
+    "deploy:production": "prisma migrate deploy && nest build && node dist/src/main"
   },
   "prisma": {
     "seed": "ts-node prisma/seed/main.ts",
