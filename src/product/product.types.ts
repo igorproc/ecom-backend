@@ -1,15 +1,24 @@
-// Prisma Types
-import type { product as TPrismaProduct } from '@prisma/client'
+import { $Enums } from '.prisma/client'
 
 export enum EAddProductTypes {
   'base' = 'BASE',
   'configurable' = 'CONFIGURABLE',
 }
 
-export type TProduct = TPrismaProduct & {
-  productOptions: TConfigurableProductOptions,
-  productVariants: TConfigurableProductVariants,
+interface TBaseProduct {
+  pid: number,
+  __typename: $Enums.products___typename,
+  productImage: string,
+  price: number,
+  name: string,
 }
+
+interface TConfigurableProduct extends TBaseProduct {
+  productOptions: TConfigurableProductOptions | null,
+  productVariants: TConfigurableProductVariants | null,
+}
+
+export type TProduct = TBaseProduct | TConfigurableProduct
 
 // Configurable Types
 export type TConfigurableProductOptions = {

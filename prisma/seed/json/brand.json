@@ -1,0 +1,16 @@
+{
+  "brands": [
+    {
+      "name": "IKEA",
+      "imageUrl": ""
+    },
+    {
+      "name": "Snug Design",
+      "imageUrl": ""
+    },
+    {
+      "name": "Classic Design",
+      "imageUrl": ""
+    }
+  ]
+}

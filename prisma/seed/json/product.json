@@ -1,0 +1,95 @@
+{
+  "products": [
+    {
+      "name": "Syltherine",
+      "price": 192.93,
+      "bid": 1,
+      "typename": "BASE",
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/product-1.png"
+    },
+    {
+      "name": "Lolito",
+      "price": 35.99,
+      "bid": 2,
+      "typename": "CONFIGURABLE",
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/product-3.png"
+    },
+    {
+      "name": "Respira",
+      "price": 78.5,
+      "bid": 3,
+      "typename": "BASE",
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/product-4.png"
+    }
+  ],
+  "productsOptions": {
+    "groups": [
+      {
+        "pid": 2,
+        "label": "COLOR"
+      },
+      {
+        "pid": 2,
+        "label": "SIZE"
+      }
+    ],
+    "items": [
+      {
+        "pcoid": 1,
+        "label": "Red",
+        "value": "#ff0000"
+      },
+      {
+        "pcoid": 1,
+        "label": "Blue",
+        "value": "#0000ff"
+      },
+      {
+        "pcoid": 2,
+        "label": "M",
+        "value": "931"
+      },
+      {
+        "pcoid": 2,
+        "label": "L",
+        "value": "932"
+      }
+    ]
+  },
+  "productVariants": {
+    "groups": [
+      {
+        "pid": 2,
+        "sku": "reebok-club-851",
+        "imageUrl": ""
+      },
+      {
+        "pid": 2,
+        "sku": "reebok-club-852",
+        "imageUrl": ""
+      }
+    ],
+    "items": [
+      {
+        "pcvid": 1,
+        "optionGroupId": 1,
+        "optionItemId": 1
+      },
+      {
+        "pcvid": 1,
+        "optionGroupId": 2,
+        "optionItemId": 3
+      },
+      {
+        "pcvid": 2,
+        "optionGroupId": 1,
+        "optionItemId": 2
+      },
+      {
+        "pcvid": 2,
+        "optionGroupId": 2,
+        "optionItemId": 4
+      }
+    ]
+  }
+}

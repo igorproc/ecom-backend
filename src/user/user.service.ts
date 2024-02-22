@@ -1,13 +1,12 @@
 // Node Deps
 import { Injectable } from '@nestjs/common'
-import { compareSync, hashSync } from "bcrypt";
+import { compareSync, hashSync } from 'bcrypt'
+import { v4 as generateUUID } from 'uuid'
 // Child Services
 import { AuthService } from '@/user/auth/auth.service'
 import { WishlistService } from '@/user/wishlist/wishlist.service'
 // Other Services
 import { PrismaService } from '@/prisma/prisma.service'
-// Constants
-import { USER_PASSWORD_SALT } from '@/user/user.const'
 // Types & Interfaces
 import { EUserRoles, TUserCreate } from '@/user/user.types'
 import { TResponseError } from '@/types/global.types'
@@ -52,6 +51,7 @@ export class UserService {
             where: { email: tokenPayload.email },
             select: {
               uid: true,
+              email: true,
               role: true,
               birthday: true
             }
@@ -76,7 +76,7 @@ export class UserService {
           .create({
             data: {
               email: userData.email,
-              password: hashSync(userData.password, USER_PASSWORD_SALT),
+              password: hashSync(userData.password, 10),
               birthday: new Date(userData.birthday),
               role: EUserRoles[userData.role] || EUserRoles.user
             }
@@ -94,23 +94,17 @@ export class UserService {
           }
         }
 
-        const wishlistToken = await this.wishlist
+       const wishlistToken = await this.wishlist
           .actions
-          .createWishlistCart(userSecret)
-        if ('error' in wishlistToken) {
-          return wishlistToken
-        }
-
-        await this.wishlist
-          .actions
-          .assignWishlist({
-            authToken: userSecret,
+          .reassignWishlist({
             guestWishlistToken: guestWishlistToken,
+            userWishlistToken: generateUUID(),
           })
+
         return {
           userData: createdData,
           token: userSecret,
-          wishlistToken: wishlistToken.wishlistToken,
+          wishlistToken: wishlistToken,
         }
       } catch (error) {
         throw error
@@ -136,6 +130,7 @@ export class UserService {
         const wishlistToken = await this.wishlist
           .actions
           .assignWishlist({ authToken: userSecret, guestWishlistToken })
+
         if (typeof wishlistToken === 'object' && 'error' in wishlistToken) {
           return wishlistToken
         }

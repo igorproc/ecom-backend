@@ -99,9 +99,9 @@ export class AuthService {
             where: { token }
           })
         if (!tokenIsDeleted) {
-          return null
+          return { isSignOut: false }
         }
-        return { isDeleted: true }
+        return { isSignOut: true }
       } catch (error) {
         throw error
       }

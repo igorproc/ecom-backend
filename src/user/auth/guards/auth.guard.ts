@@ -47,7 +47,6 @@ export class AuthGuard implements CanActivate {
     }
 
     const tokenPayload = this.auth.getters.getTokenData(authToken)
-    console.log(tokenPayload.role.toLowerCase(), roles)
     if (!roles.includes(tokenPayload.role.toLowerCase())) {
       throw new UnauthorizedException()
     }

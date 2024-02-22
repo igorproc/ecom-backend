@@ -1,7 +1,7 @@
-import { IsNumber, IsString, IsOptional, IsUUID } from 'class-validator'
+import { IsNumber, IsOptional, IsUUID } from 'class-validator'
 
 export class AddProductToWishlistDto {
-  @IsString()
+  @IsUUID()
   wishlistToken: string
 
   @IsNumber()
@@ -10,4 +10,12 @@ export class AddProductToWishlistDto {
   @IsOptional()
   @IsNumber()
   variantId: number
+}
+
+export class RemoveProductFromWishlistDto {
+  @IsUUID()
+  wishlistToken: string
+
+  @IsNumber()
+  wishlistItemId: number
 }
