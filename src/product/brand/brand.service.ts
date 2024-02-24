@@ -33,7 +33,7 @@ export class BrandService {
             skip: pageDataValues.skip,
             take: pageDataValues.values,
             orderBy: {
-              bid: pageData.filters.direction || 'asc'
+              bid: pageData?.direction || 'asc'
             },
             select: {
               bid: true,

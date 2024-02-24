@@ -6,10 +6,6 @@ export enum EBrandFilterDirection {
   'desc' = 'desc',
 }
 
-class BrandListFilters {
-  @IsEnum(EBrandFilterDirection)
-  direction: EBrandFilterDirection
-}
 export class GetBrandList {
   @IsNumber()
   page: number
@@ -18,7 +14,8 @@ export class GetBrandList {
   size: number
 
   @IsOptional()
-  filters: BrandListFilters
+  @IsEnum(EBrandFilterDirection)
+  direction?: EBrandFilterDirection
 }
 
 export class CreateBrandDto {

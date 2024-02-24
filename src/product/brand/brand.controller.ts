@@ -8,8 +8,11 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
-  ParseFilePipe, MaxFileSizeValidator, FileTypeValidator
-} from "@nestjs/common";
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator
+} from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
 // Other Services
 import { BrandService } from '@/product/brand/brand.service'
 import { UploadService } from '@/upload/upload.service'
@@ -22,7 +25,6 @@ import {
   CreateBrandDto,
   GetBrandList
 } from '@/product/brand/dto/brand.dto'
-import { FileInterceptor } from "@nestjs/platform-express";
 
 @Controller('product/brand')
 export class BrandController {
@@ -33,11 +35,13 @@ export class BrandController {
 
   @Get('list')
   async getBrandListByPage (
-    @Body() pageData: GetBrandList
+    @Query('page') page: number,
+    @Query('size') size: number,
+
   ) {
     return await this.brandService
       .getters
-      .getBrandsList(pageData)
+      .getBrandsList({ page, size })
   }
 
   @Post('upload')
