@@ -104,6 +104,30 @@ export class ProductService {
         throw error
       }
     },
+    getProductByName: async (productName: string) => {
+      try {
+        const productData = await this.prisma
+          .product
+          .findMany({
+            where: {
+              name: {
+                contains: productName,
+              }
+            },
+            select: {
+              pid: true
+            }
+          })
+
+        if (!productData.length) {
+          return null
+        }
+
+        return this.getters.getProductById(productData[0].pid)
+      } catch (error) {
+        throw error
+      }
+    },
     getProductById: async (productId: number) => {
       try {
         const productData = await this.prisma

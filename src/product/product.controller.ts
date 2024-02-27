@@ -50,19 +50,17 @@ export class ProductController {
       })
   }
 
-  @Get(':id')
+  @Get(':name')
   async getProductById(
-    @Param('id') id: string
+    @Param('name') name: string
   ) {
-    if (!id || !Number(id)) {
+    if (!name) {
       return { error: { code: 501, message: 'No Required Fields are sends' } }
     }
 
     return await this.productService
       .getters
-      .getProductById(
-        Number(id)
-      )
+      .getProductByName(name)
   }
 
   @Post('uploadImage')
