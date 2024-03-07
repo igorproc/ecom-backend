@@ -7,6 +7,7 @@ import { PrismaService } from '@/prisma/prisma.service'
 // Child Services
 import { ConfigurableProductService } from '@/product/configurable/configurable.service'
 import { BrandService } from '@/product/brand/brand.service'
+import { productAdditionalDataService } from '@/product/additionalData/productAddtitionalData.service'
 // Validation DTO
 import type {
   GetProductListDto as TGetProductListInput,
@@ -20,7 +21,6 @@ import {
 } from '@/product/product.types'
 // Utils
 import { getPageDataSize } from '@/product/utils/getPageData'
-import { getTotalPagesBySize } from '@/product/utils/totalPagesBySize'
 // Constants
 import { DEFAULT_PAGE_SIZE } from '@/product/const/product.const'
 
@@ -30,7 +30,22 @@ export class ProductService {
     private readonly prisma: PrismaService,
     private readonly configurableProduct: ConfigurableProductService,
     private readonly brand: BrandService,
+    private readonly additionalData: productAdditionalDataService,
   ) {}
+
+  public readonly validators = {
+    productIsExists: async (productId: number) => {
+      try {
+        return !!await this.prisma
+          .product
+          .findUnique({
+            where: { pid: productId }
+          })
+      } catch (error) {
+        throw error
+      }
+    }
+  }
 
   public readonly getters = {
     getProductCount: async (brandId: number | null) => {
@@ -53,7 +68,6 @@ export class ProductService {
         throw error
       }
     },
-
     getProductList: async (filterData: TGetProductListInput) => {
       try {
         type TSqlFilters = {
@@ -135,21 +149,38 @@ export class ProductService {
           .findUnique({
             where: { pid: productId }
           })
+
         if (!productData) {
           return null
         }
 
+        const productBrand = await this
+          .brand
+          .getters
+          .getBrandDataById(productData.bid)
+        const additionalData = await this
+          .additionalData
+          .getters
+          .getAdditionalDataByProductId(productData.pid)
+
         const formattedProductData = {
           pid: productData.pid,
           __typename: productData.typename,
-          brandId: productData.bid,
+          brand: {
+            id: productBrand.bid,
+            name: productBrand.name,
+          },
+          additionalData: additionalData,
           productImage: productData.productImage,
           price: productData.price,
           name: productData.name,
+          description: productData.description,
         }
+
         if (productData.typename === EAddProductTypes.base) {
           return formattedProductData
         }
+
         const productOptions = await this.configurableProduct
           .getters
           .getProductOptions(productId)
@@ -166,17 +197,6 @@ export class ProductService {
         throw error
       }
     },
-    productIsExists: async (productId: number) => {
-      try {
-        return !!await this.prisma
-          .product
-          .findUnique({
-            where: { pid: productId }
-          })
-      } catch (error) {
-        throw error
-      }
-    }
   }
 
   public readonly actions = {

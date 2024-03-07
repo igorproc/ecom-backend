@@ -63,6 +63,17 @@ export class BrandService {
       } catch (error) {
         throw error
       }
+    },
+    getBrandDataById: async (brandId: number) => {
+      try {
+        return await this.prisma
+          .brand
+          .findUnique({
+            where: { bid: brandId },
+          })
+      } catch (error) {
+        throw error
+      }
     }
   }
   public readonly actions = {

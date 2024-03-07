@@ -72,6 +72,43 @@ model productVariantItem {
   @@map("product_variant_items")
 }
 
+model productAdditionalDataGroup {
+  padgid Int    @id @default(autoincrement()) @db.UnsignedInt
+  pid    Int    @db.UnsignedInt
+  label  String @db.VarChar(32)
+
+  //  Relations
+  products                    product                     @relation(fields: [pid], references: [pid], onDelete: Cascade, onUpdate: NoAction, map: "product_additional_groups_pid_foregin")
+  productsAdditionalDataItems productAdditionalDataItem[]
+
+  @@index([pid], map: "index_pid_for_additional_data")
+  @@map("products_additional_data_group")
+}
+
+model productAdditionalDataItem {
+  padiid  Int    @id @default(autoincrement()) @db.UnsignedInt
+  padgid  Int    @db.UnsignedInt
+  label   String @db.VarChar(32)
+  feature String @db.VarChar(64)
+
+  // Relations
+  productAdditionalDataGroup       productAdditionalDataGroup? @relation(fields: [padgid], references: [padgid])
+
+  @@map("products_additional_data_item")
+}
+
+model productReviews {
+  prid   Int    @id @default(autoincrement()) @db.UnsignedInt
+  pid    Int    @db.UnsignedInt
+  review String @db.VarChar(64)
+  rate   Int    @db.UnsignedInt
+
+  // Relations
+  products product @relation(fields: [pid], references: [pid], onDelete: Cascade, onUpdate: NoAction, map: "product_reviews_pid_foregin")
+
+  @@map("product_reviews")
+}
+
 model brand {
   bid       Int       @id @default(autoincrement()) @db.UnsignedInt
   name      String    @unique(map: "brands_name_unique") @db.VarChar(64)
@@ -84,18 +121,21 @@ model brand {
 }
 
 model product {
-  pid                    Int                   @id @default(autoincrement()) @db.UnsignedInt
-  typename               products___typename?  @default(BASE) @map("__typename")
-  name                   String                @db.VarChar(64)
-  price                  Float                 @db.Float
-  productImage           String?               @map("product_image") @db.VarChar(255)
-  bid                    Int?                  @db.UnsignedInt
-  createdAt              DateTime?             @default(now()) @map("created_at") @db.Timestamp(0)
-  updatedAt              DateTime?             @default(now()) @map("updated_at") @db.Timestamp(0)
+  pid                           Int                          @id @default(autoincrement()) @db.UnsignedInt
+  typename                      products___typename?         @default(BASE) @map("__typename")
+  name                          String                       @db.VarChar(64)
+  description                   String?                      @db.VarChar(512)
+  price                         Float                        @db.Float
+  productImage                  String?                      @map("product_image") @db.VarChar(255)
+  bid                           Int?                         @db.UnsignedInt
+  createdAt                     DateTime?                    @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt                     DateTime?                    @default(now()) @map("updated_at") @db.Timestamp(0)
   // Relations
-  product_variant_groups productVariantGroup[]
-  brand_relation         brand?                @relation(fields: [bid], references: [bid], onDelete: Cascade)
-  product_option_groups  productOptionGroup[]
+  product_variant_groups        productVariantGroup[]
+  product_option_groups         productOptionGroup[]
+  brand_relation                brand?                       @relation(fields: [bid], references: [bid], onDelete: Cascade)
+  product_additional_data_group productAdditionalDataGroup[]
+  product_reviews                productReviews[]
 
   @@map("products")
 }

@@ -150,7 +150,7 @@ export class WishlistService {
     },
     addProductToWishlistItem: async (productData: TUserWishlistAddProductInput) => {
       try {
-        const productIsExists = await this.product.getters.productIsExists(productData.productId)
+        const productIsExists = await this.product.validators.productIsExists(productData.productId)
         if (!productIsExists) {
           return { productIsAdded: false }
         }

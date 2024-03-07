@@ -2,15 +2,15 @@
   "brands": [
     {
       "name": "IKEA",
-      "imageUrl": ""
+      "imageUrl": "https://s3.timeweb.com/2482d258-ecom-pet-project/brand-IKEA.png"
     },
     {
-      "name": "Snug Design",
-      "imageUrl": ""
+      "name": "Hoff",
+      "imageUrl": "https://s3.timeweb.com/2482d258-ecom-pet-project/brand-CLASSIC.jpg"
     },
     {
       "name": "Classic Design",
-      "imageUrl": ""
+      "imageUrl": "https://s3.timeweb.com/2482d258-ecom-pet-project/brand-CLASSIC.jpg"
     }
   ]
 }

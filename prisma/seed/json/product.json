@@ -3,14 +3,14 @@
     {
       "name": "Syltherine",
       "price": 192.93,
-      "bid": 1,
+      "bid": 3,
       "typename": "BASE",
       "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/product-1.png"
     },
     {
       "name": "Lolito",
       "price": 35.99,
-      "bid": 2,
+      "bid": 3,
       "typename": "CONFIGURABLE",
       "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/product-3.png"
     },
@@ -20,6 +20,41 @@
       "bid": 3,
       "typename": "BASE",
       "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/product-4.png"
+    },
+    {
+      "name": "Leviosa",
+      "price": 98.1,
+      "bid": 3,
+      "typename": "BASE",
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/product-2.png"
+    },
+    {
+      "name": "Moppe",
+      "price": 33.9,
+      "bid": 1,
+      "typename": "CONFIGURABLE",
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/ikea-moppe.jpg"
+    },
+    {
+      "name": "Strandmon",
+      "price": 189,
+      "bid": 1,
+      "typename": "CONFIGURABLE",
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/ikea-sofa.jpg"
+    },
+    {
+      "name": "Telma",
+      "price": 95.6,
+      "bid": 2,
+      "typename": "CONFIGURABLE",
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/hoff-telma.jpg"
+    },
+    {
+      "name": "Betta",
+      "price": 105,
+      "bid": 2,
+      "typename": "CONFIGURABLE",
+      "productImage": "https://s3.timeweb.com/2482d258-ecom-pet-project/hoff-betta.jpg"
     }
   ],
   "productsOptions": {
